@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,17 +34,16 @@ class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
-    ResponseEntity<Optional<Task>> readTask(@PathVariable @Valid int id){
-        if(!repository.existsById(id)){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(repository.findById(id));
+    ResponseEntity<Task> readTask(@PathVariable int id){
+        return repository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/tasks")
-    void saveTask(@RequestBody @Valid Task toSave){
-        toSave.setId(repository.findAll().size());
-        repository.save(toSave);
+    ResponseEntity<Task> createTask(@RequestBody @Valid Task toCreate){
+        Task result = repository.save(toCreate);
+        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
     @PutMapping("/tasks/{id}")
