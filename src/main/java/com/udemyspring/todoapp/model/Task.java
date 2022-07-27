@@ -1,6 +1,7 @@
 package com.udemyspring.todoapp.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -13,12 +14,17 @@ public class Task {
     private String description;
     private boolean done;
 
+    private LocalDateTime deadLine;
+
+    private LocalDateTime createdOn;
+    private LocalDateTime updatedOn;
     Task() {
     }
 
     public String getDescription() {
         return description;
     }
+
 
     void setDescription(final String description) {
         this.description = description;
@@ -28,7 +34,7 @@ public class Task {
         return done;
     }
 
-    void setDone(final boolean done) {
+    public void setDone(final boolean done) {
         this.done = done;
     }
 
@@ -36,7 +42,37 @@ public class Task {
         return id;
     }
 
-    public void setId(final int id) {
+    void setId(final int id) {
         this.id = id;
     }
+
+    public LocalDateTime getDeadLine() {
+        return deadLine;
+    }
+
+    public void setDeadLine(LocalDateTime deadLine) {
+        this.deadLine = deadLine;
+    }
+
+
+    public void updateFrom(final Task source){
+        description = source.description;
+        done =source.done;
+        deadLine = source.deadLine;
+
+    }
+
+    @PrePersist
+    void prePersist(){
+        createdOn = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    void preMerge(){
+        updatedOn = LocalDateTime.now();
+    }
+
+
+
 }
+
