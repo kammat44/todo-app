@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="tasks")
-public class Task {
+public class Task{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -16,8 +16,13 @@ public class Task {
 
     private LocalDateTime deadLine;
 
-    private LocalDateTime createdOn;
-    private LocalDateTime updatedOn;
+    @ManyToOne
+    @JoinColumn (name = "task_group_id")
+    private TaskGroup group;
+
+    @Embedded
+    private Audit audit =new Audit();
+
     Task() {
     }
 
@@ -54,23 +59,19 @@ public class Task {
         this.deadLine = deadLine;
     }
 
+    TaskGroup getGroup() {
+        return group;
+    }
+
 
     public void updateFrom(final Task source){
         description = source.description;
         done =source.done;
         deadLine = source.deadLine;
-
+        group = source.group;
     }
 
-    @PrePersist
-    void prePersist(){
-        createdOn = LocalDateTime.now();
-    }
 
-    @PreUpdate
-    void preMerge(){
-        updatedOn = LocalDateTime.now();
-    }
 
 
 
