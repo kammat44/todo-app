@@ -9,10 +9,9 @@ abstract class BaseTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
-    protected LocalDateTime deadline;
-
     @NotBlank(message = "Task's description must not be null")
     protected String description;
+    protected LocalDateTime deadline;
     protected boolean done;
 
 
